@@ -12,7 +12,7 @@
   <% end %>
 
   <div class="field form-group" >
-    <%= form.label :street_address %>
+    <%= form.label 'Address or Approximate Location' %>
     <%= form.text_field :street_address, id: :location_street_address, class: 'form-control' %>
   </div>
 
@@ -23,7 +23,7 @@
 
 
 
-  <div class="actions">
-    <%= form.submit %>
+  <div class="actions form-group">
+    <%= form.submit 'Find My Bus!', class: 'btn btn-sm btn-info' %>
   </div>
 <% end %>

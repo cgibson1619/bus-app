@@ -1,5 +1,15 @@
-<h1>Where you at?!</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4
+                col-sm-6 col-sm-offset-3
+                col-xs-10 col-xs-offset-1">
+      <h1 class="text-center">Accio Buses</h1>
 
-<%= render 'form', location: @location %>
+      <p>
+        Where you at?! Maybe you can catch the bus!
+      </p>
 
-<%= link_to 'Back', locations_path %>
+      <%= render 'form', location: @location %>
+    </div>
+  </div>
+</div>
