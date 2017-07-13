@@ -8,6 +8,11 @@
   <%= @location.full_street_address %> <small><%= link_to fa_icon('pencil', text: 'Edit'), edit_location_path(@location) %></small>
 </p>
 
+<!-- Map goes here -->
+<div id="map-canvas"></div>
+
+
+
 <h3>The closest buses are...</h3>
 
 <!-- Get all buses and iterate through each one -->
@@ -33,4 +38,85 @@
 <% end %>
 
 <%= link_to 'Edit', edit_location_path(@location), class: 'btn btn-xs btn-default' %>
+
+<!-- Tells rails where the google maps api is, along with your key -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['google_maps_api_key'] %>"></script>
+
+<script type="text/javascript">
+  // This is the function that makes the map
+  function initialize() {
+    // User's location
+    var myLocation = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+
+    // Options/Settings for the map
+    var mapOptions = {
+      center: myLocation,
+      zoom: 15
+    };
+
+    // The map
+    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    // Person Icon
+    var personIcon = "<%= image_path 'man_icon.png' %>";
+
+    // User location marker
+    var myMarker = new google.maps.Marker({
+      position: myLocation,
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title: 'My Location',
+      icon: personIcon
+    });
+
+    // *** The buses - Where are they?? ***
+
+    // The list of all the nearby buses
+    var nearbyBuses = <%= raw @buses.to_json %>;
+
+    // Iterate through buses and put each one on the map with a little marker
+    nearbyBuses.forEach(function (bus){
+      // Make a Google Maps location variable
+      var busLocation = new google.maps.LatLng(bus['LATITUDE'], bus['LONGITUDE']);
+
+      // Make marker for the bus
+      var busMarker = new google.maps.Marker({
+        position: busLocation,
+        map: map,
+        animation: google.maps.Animation.DROP,
+        title: bus['VEHICLE']
+      });
+
+
+
+      // The content for the info window
+      var infoWindowContent =
+        '<div id="content">' +
+          '<h2>Bus ' + bus['VEHICLE'] + ' ' + bus['DIRECTION'] + '</h2>' +
+          '<div id="bodyContent">' +
+            '<p>Next Stop: ' + bus['TIMEPOINT'] + '</p>' +
+          '</div>' +
+        '</div>';
+
+      // Info window
+      var infoWindow = new google.maps.InfoWindow({
+        content: infoWindowContent
+      });
+
+       // Set up a listener on the marker to pop open the info window when you click the marker
+       google.maps.event.addListener(busMarker, 'click', function() {
+        infoWindow.open(map, busMarker);
+       });
+    });
+  }
+
+  // actually runs the function that creates the map
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+
+
+
+
+
 
