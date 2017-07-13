@@ -1,41 +1,57 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Your Buses</h1>
+<div class="container">
+  <div class="row">
+    <h1 class="text-center">Your Buses</h1>
 
-<h3 class="text-muted">Your currnt location:</h3>
+    <!-- left box -->
+    <div class="col-sm-6">
+      <h3 class="text-muted">Your currnt location:</h3>
 
-<p class="text-muted">
-  <%= @location.full_street_address %> <small><%= link_to fa_icon('pencil', text: 'Edit'), edit_location_path(@location) %></small>
-</p>
+      <p class="text-muted">
+        <%= @location.full_street_address %> <small><%= link_to fa_icon('pencil', text: 'Edit'), edit_location_path(@location) %></small>
+      </p>
 
-<!-- Map goes here -->
-<div id="map-canvas"></div>
+      <!-- Map goes here -->
+      <div id="map-canvas"></div>
+    </div>
+    <!-- right box -->
+    <div class="col-sm-6">
+      <h3>The closest buses are...</h3>
 
+    <!-- Get all buses and iterate through each one -->
+    <% @buses.each do |bus| %>
+      <div class="well">
+        <p>
+          <!-- Route / Direction -->
+          <strong>Route: </strong><%= bus["ROUTE"] %> <%= bus["DIRECTION"] %>
+          <br>
+          <!-- Bus Number -->
+          <strong>Bus Number: </strong><%= bus["VEHICLE"] %>
+          <br>
+          <!-- Next Stop -->
+          <strong>Next Stop: </strong><%= bus["TIMEPOINT"] %>
+        </p>
+      </div>
+    <% end %>
 
-
-<h3>The closest buses are...</h3>
-
-<!-- Get all buses and iterate through each one -->
-<% @buses.each do |bus| %>
-  <div class="well">
-    <p>
-      <!-- Route / Direction -->
-      <strong>Route: </strong><%= bus["ROUTE"] %> <%= bus["DIRECTION"] %>
-      <br>
-      <!-- Bus Number -->
-      <strong>Bus Number: </strong><%= bus["VEHICLE"] %>
-      <br>
-      <!-- Next Stop -->
-      <strong>Next Stop: </strong><%= bus["TIMEPOINT"] %>
-    </p>
+    <% if @buses.empty? %>
+      <p>
+        Not really that close... <%= link_to 'edit your location', edit_location_path(@location) %>
+      </p>
+    <% end %>
+    </div>
   </div>
-<% end %>
+</div>
 
-<% if @buses.empty? %>
-  <p>
-    Not really that close... <%= link_to 'edit your location', edit_location_path(@location) %>
-  </p>
-<% end %>
+
+
+
+
+
+
+
+
 
 <%= link_to 'Edit', edit_location_path(@location), class: 'btn btn-xs btn-default' %>
 
